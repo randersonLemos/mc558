@@ -82,7 +82,6 @@ if __name__ == '__main__':
         E = sis.adjacentvertices()
         for u,v in E : adjs[u+1].add(v+1); adjs[v+1].add(u+1)
 
-    
     msg ='Não é sequência gráfica!'
     if sis.n == 1:
         pos = sis.sortedpositions[0]
@@ -90,8 +89,7 @@ if __name__ == '__main__':
         if deg == 0: # É sequência gráfica
             msg = ''
             for u in adjs:
-                msg += ' '.join( map( str, sorted(adjs[u]) ) ) + '\n'
+                msg += ( ' '.join( map(str, sorted(adjs[u])) ) if adjs[u] else '' ) + '\n'
                 
-
-    print(msg.strip('\n'))
+    print(msg[:-1])
 
