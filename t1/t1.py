@@ -90,6 +90,7 @@ if __name__ == '__main__':
             msg = ''
             for u in adjs:
                 msg += ( ' '.join( map(str, sorted(adjs[u])) ) if adjs[u] else '' ) + '\n'
+            msg = msg[:-1]
                 
-    print(msg[:-1])
+    print( msg )
 
