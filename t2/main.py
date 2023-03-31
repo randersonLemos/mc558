@@ -1,32 +1,6 @@
 import copy
 import pprint
 
-#class MainIndex:
-#    def __init__(self, vertice, indexes=[]):
-#        self.vertice = vertice
-#        self.indexes = indexes
-#
-#    
-#    def update_indexes(self, lst):
-#        self.indexes = indexes
-#
-#
-#    def __repr__(self):
-#        return '(v:{}-i:{})'.format(self.vertice, self.indexes)
-#
-#
-#    def __hash__(self):
-#        return hash(self.vertice)
-#
-#
-#    def __eq__(self, other):
-#        is_equal = False
-#        if isinstance(other, int):
-#           is_equal = self.vertice == other
-#        if isinstance(other, Index):
-#            is_equal =  self.vertice == other.vertice
-#        return is_equal
-
 
 class AdjacencyListElements:
     def __init__(self, vertice, color, neighbor_index, visited):
@@ -74,7 +48,7 @@ class AdjacencyList:
         return '{} - {}'.format(self.lst.__repr__(), self.free_indexes().__repr__())
 
 
-def computemaximaltrail( root, adjs ):
+def computeMaximalTrail( root, adjs ):
     T = [];
     T.append( root )
     edge_color = -1
@@ -89,7 +63,7 @@ def computemaximaltrail( root, adjs ):
         found_vertice = False
 
         if not adjacencylist_v.free_indexes(): # No free elements
-           return 'Não possui trilha Euleriana alternante' 
+           return []
 
         for u_idx_v in adjacencylist_v.free_indexes():
             u_adjacencyelement_v = adjacencylist_v.get_element(u_idx_v)
@@ -112,8 +86,28 @@ def computemaximaltrail( root, adjs ):
         pprint.pprint( adjs ); print('---')
         print( T ); print('+++')
 
-        if not found_vertice : return 'Não possui trilha Euleriana alternante'
+        if not found_vertice : return []
         if T[0] == T[-1] : return T
+
+
+def computeEulerianTrail( adjs ):
+    root = next( iter( adjs ) )
+
+    EulerianAlternateTrail = []
+    while True:
+        maximaltrail = computeMaximalTrail( root, adjs )
+        maximaltrails.append( maximaltrail )
+
+        if not maximaltrail:
+            return 'Não possui trilha Euleriana alternante'
+
+        for v in reversed( maximaltrail ):
+            adjacencylist = adjs[ v ]
+            if adjacencylist.free_indexes():
+                root = v
+                import IPython; IPython.embed()
+
+
             
 
 if __name__ == '__main__':
@@ -135,12 +129,9 @@ if __name__ == '__main__':
         adjs[u].append( AdjacencyListElements(vertice = v, color = c, neighbor_index = u_pos_v, visited = 0) )
         adjs[v].append( AdjacencyListElements(vertice = u, color = c, neighbor_index = v_pos_u, visited = 0) )
 
-    root = next( iter( adjs ) )
-    maximaltrail = computemaximaltrail( root, adjs )
+    result = computeEulerianTrail( adjs )
 
-    import IPython; IPython.embed()
-
-    #print('>>>>>')
-    #print(maximaltrail)
-    #print('<<<<<')
+    print('>>>>>')
+    print(result)
+    print('<<<<<')
 
