@@ -132,11 +132,13 @@ def computeEulerianTrail( adjs ):
             
 
 if __name__ == '__main__':
-    import argparse; parser = argparse.ArgumentParser()
-    parser.add_argument('--file', type=argparse.FileType('r'), required=True)
-    args = parser.parse_args()
-    file = args.file
-    n, m =  map( int, file.readline().strip().split(' ') )
+    #import argparse; parser = argparse.ArgumentParser()
+    #parser.add_argument('--file', type=argparse.FileType('r'), required=True)
+    #args = parser.parse_args()
+    #file = args.file
+    #n, m =  map( int, file.readline().strip().split(' ') )
+
+    n, m = map( int, input().strip().split(' ') )
 
     adjs = {}
     for i in range(n):
@@ -144,7 +146,8 @@ if __name__ == '__main__':
 
 
     for i in range(m):
-        u, v, c = map( int, file.readline().strip().split(' ') )
+        #u, v, c = map( int, file.readline().strip().split(' ') )
+        u, v, c = map( int, input().strip().split(' ') )
         v_pos_u = len(adjs[u]); u_pos_v = len(adjs[v])
 
         adjs[u].append( AdjacencyListElements(vertice = v, color = c, neighbor_index = u_pos_v, visited = 0) )
