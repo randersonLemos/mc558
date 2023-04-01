@@ -48,32 +48,35 @@ class AdjacencyList:
         return '{} - {}'.format(self.lst.__repr__(), self.free_indexes().__repr__())
 
 
-def computeMaximalTrail( root, adjs ):
+def computeMaximalTrail( root, adjs, edge_color=-1 ):
     T = [];
+    C = [];
     T.append( root )
-    edge_color = -1
+    C.append( edge_color )
 
     #pprint.pprint( adjs ); print('---')
     #print( T ); print('+++')
 
     while True:
         v = T[-1]
-        previous_edge_color = edge_color
+        #previous_edge_color = edge_color
+        previous_edge_color = C[-1]
         adjacencylist_v = adjs[v]
         found_vertice = False
 
         if not adjacencylist_v.free_indexes(): # No free elements
-           return []
+           return [], []
 
         for u_idx_v in adjacencylist_v.free_indexes():
             u_adjacencyelement_v = adjacencylist_v.get_element(u_idx_v)
             u          = u_adjacencyelement_v.vertice
             v_idx_u    = u_adjacencyelement_v.neighbor_index
             edge_color = u_adjacencyelement_v.color
-
             if edge_color != previous_edge_color:
+                #print('{} - {}'.format(previous_edge_color, edge_color) )
                 found_vertice = True
                 T.append(u)
+                C.append(edge_color)
                 u_adjacencyelement_v.visited = 1
                 adjacencylist_u = adjs[u]
                 v_adjacencyelement_u = adjacencylist_u.get_element(v_idx_u)
@@ -86,8 +89,11 @@ def computeMaximalTrail( root, adjs ):
         #pprint.pprint( adjs ); print('---')
         #print( T ); print('+++')
 
-        if not found_vertice : return []
-        if T[0] == T[-1] : return T
+        if not found_vertice:
+            return [], []
+
+        if (T[0] == T[-1]) and (not adjs[T[0]].free_indexes()):
+            return T, C
     
 
 def concatTrail( trail, pivot, other ):
@@ -99,9 +105,9 @@ def concatTrail( trail, pivot, other ):
 
 
 def computeEulerianTrail( adjs ):
-    #root = next( iter( adjs ) ); #pivot = -1
     EulerianAlternateTrail = [0]
     maximaltrail = []
+    edge_color = -1
     while True:
         free_indexes = False
         for pivot, v in enumerate( EulerianAlternateTrail ): 
@@ -114,19 +120,25 @@ def computeEulerianTrail( adjs ):
         if not free_indexes:
             return EulerianAlternateTrail
 
-        maximaltrail = computeMaximalTrail( root, adjs )
+        maximaltrail, colors = computeMaximalTrail( root, adjs, edge_color )
 
         if not maximaltrail:
             return []
             #return 'Não possui trilha Euleriana alternante'
 
-        #print('R', root) 
-        #print('E', EulerianAlternateTrail)
-        #print('M', maximaltrail)
+        edge_color = colors[-1]
 
+        #pprint.pprint(adjs)
+        print('R', root) 
+        print('E', EulerianAlternateTrail)
+        print('M', maximaltrail)
+        print('C', colors)
+        import IPython; IPython.embed()
         EulerianAlternateTrail = concatTrail( EulerianAlternateTrail, pivot, maximaltrail)
 
         #print('E', EulerianAlternateTrail)
+
+        #import IPython; IPython.embed()
              
 
             

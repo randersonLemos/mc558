@@ -48,10 +48,10 @@ class AdjacencyList:
         return '{} - {}'.format(self.lst.__repr__(), self.free_indexes().__repr__())
 
 
-def computeMaximalTrail( root, adjs ):
+def computeMaximalTrail( root, adjs, edge_color=-1 ):
     T = [];
     T.append( root )
-    edge_color = -1
+    #edge_color = -1
 
     #pprint.pprint( adjs ); print('---')
     #print( T ); print('+++')
@@ -63,7 +63,7 @@ def computeMaximalTrail( root, adjs ):
         found_vertice = False
 
         if not adjacencylist_v.free_indexes(): # No free elements
-           return []
+           return [], -1
 
         for u_idx_v in adjacencylist_v.free_indexes():
             u_adjacencyelement_v = adjacencylist_v.get_element(u_idx_v)
@@ -86,8 +86,8 @@ def computeMaximalTrail( root, adjs ):
         #pprint.pprint( adjs ); print('---')
         #print( T ); print('+++')
 
-        if not found_vertice : return []
-        if T[0] == T[-1] : return T
+        if not found_vertice : return [], -1
+        if T[0] == T[-1] : return T, edge_color
     
 
 def concatTrail( trail, pivot, other ):
@@ -99,9 +99,9 @@ def concatTrail( trail, pivot, other ):
 
 
 def computeEulerianTrail( adjs ):
-    #root = next( iter( adjs ) ); #pivot = -1
     EulerianAlternateTrail = [0]
     maximaltrail = []
+    edge_color = -1
     while True:
         free_indexes = False
         for pivot, v in enumerate( EulerianAlternateTrail ): 
@@ -114,7 +114,7 @@ def computeEulerianTrail( adjs ):
         if not free_indexes:
             return EulerianAlternateTrail
 
-        maximaltrail = computeMaximalTrail( root, adjs )
+        maximaltrail, edge_color = computeMaximalTrail( root, adjs, edge_color )
 
         if not maximaltrail:
             return []
@@ -127,8 +127,6 @@ def computeEulerianTrail( adjs ):
         EulerianAlternateTrail = concatTrail( EulerianAlternateTrail, pivot, maximaltrail)
 
         #print('E', EulerianAlternateTrail)
-             
-
             
 
 if __name__ == '__main__':
