@@ -48,32 +48,29 @@ class AdjacencyList:
         return '{} - {}'.format(self.lst.__repr__(), self.free_indexes().__repr__())
 
 
-def computeMaximalTrail( root, adjs, edge_color=-1 ):
+def computeMaximalTrail( root, adjs, previous_edge_color=-1 ):
     T = [];
+    C = [];
     T.append( root )
-    #edge_color = -1
-
-    #pprint.pprint( adjs ); print('---')
-    #print( T ); print('+++')
-
+    C.append( previous_edge_color )
     while True:
         v = T[-1]
-        previous_edge_color = edge_color
+        previous_edge_color = C[-1]
         adjacencylist_v = adjs[v]
         found_vertice = False
 
         if not adjacencylist_v.free_indexes(): # No free elements
-           return [], -1
+           return [], []
 
         for u_idx_v in adjacencylist_v.free_indexes():
             u_adjacencyelement_v = adjacencylist_v.get_element(u_idx_v)
-            u          = u_adjacencyelement_v.vertice
-            v_idx_u    = u_adjacencyelement_v.neighbor_index
-            edge_color = u_adjacencyelement_v.color
-
+            u                    = u_adjacencyelement_v.vertice
+            v_idx_u              = u_adjacencyelement_v.neighbor_index
+            edge_color           = u_adjacencyelement_v.color
             if edge_color != previous_edge_color:
                 found_vertice = True
                 T.append(u)
+                C.append(edge_color)
                 u_adjacencyelement_v.visited = 1
                 adjacencylist_u = adjs[u]
                 v_adjacencyelement_u = adjacencylist_u.get_element(v_idx_u)
@@ -83,59 +80,49 @@ def computeMaximalTrail( root, adjs, edge_color=-1 ):
                 adjacencylist_v.block_element(u_idx_v)
                 break
 
-        #pprint.pprint( adjs ); print('---')
-        #print( T ); print('+++')
+        if not found_vertice:
+            return [], []
 
-        if not found_vertice : return [], -1
-        if T[0] == T[-1] : return T, edge_color
+        if (T[0] == T[-1]) and (not adjs[T[0]].free_indexes()):
+            return T, C
     
 
 def concatTrail( trail, pivot, other ):
     if pivot == -1:
         return other
 
-    trail[pivot:pivot] = other[:-1]
+    trail = trail[:pivot] + other + trail[pivot+1:]
     return trail
 
 
 def computeEulerianTrail( adjs ):
     EulerianAlternateTrail = [0]
+    EulerianAlternateColor = [-1]
     maximaltrail = []
-    edge_color = -1
+
     while True:
         free_indexes = False
-        for pivot, v in enumerate( EulerianAlternateTrail ): 
+        for pivot, (v, edge_color) in enumerate( zip(EulerianAlternateTrail, EulerianAlternateColor) ): 
             adjacencylist = adjs[ v ]
             if adjacencylist.free_indexes():
                 free_indexes = True
                 root = v
+                previous_edge_color = edge_color
                 break
 
         if not free_indexes:
-            return EulerianAlternateTrail
+            return EulerianAlternateTrail, EulerianAlternateColor
 
-        maximaltrail, edge_color = computeMaximalTrail( root, adjs, edge_color )
+        maximaltrail, colors = computeMaximalTrail( root, adjs, edge_color )
 
         if not maximaltrail:
-            return []
-            #return 'Não possui trilha Euleriana alternante'
+            return [], []
 
-        #print('R', root) 
-        #print('E', EulerianAlternateTrail)
-        #print('M', maximaltrail)
+        EulerianAlternateTrail = concatTrail( EulerianAlternateTrail, pivot, maximaltrail )
+        EulerianAlternateColor = concatTrail( EulerianAlternateColor, pivot, colors )  
 
-        EulerianAlternateTrail = concatTrail( EulerianAlternateTrail, pivot, maximaltrail)
-
-        #print('E', EulerianAlternateTrail)
-            
 
 if __name__ == '__main__':
-    #import argparse; parser = argparse.ArgumentParser()
-    #parser.add_argument('--file', type=argparse.FileType('r'), required=True)
-    #args = parser.parse_args()
-    #file = args.file
-    #n, m =  map( int, file.readline().strip().split(' ') )
-
     n, m = map( int, input().strip().split(' ') )
 
     adjs = {}
@@ -144,19 +131,17 @@ if __name__ == '__main__':
 
 
     for i in range(m):
-        #u, v, c = map( int, file.readline().strip().split(' ') )
         u, v, c = map( int, input().strip().split(' ') )
         v_pos_u = len(adjs[u]); u_pos_v = len(adjs[v])
 
         adjs[u].append( AdjacencyListElements(vertice = v, color = c, neighbor_index = u_pos_v, visited = 0) )
         adjs[v].append( AdjacencyListElements(vertice = u, color = c, neighbor_index = v_pos_u, visited = 0) )
 
-    result = computeEulerianTrail( adjs )
+    trail, color = computeEulerianTrail( adjs )
     
-    stg = 'Não possui trilha Euleriana alternante'
-    if result: 
-        stg = ' '.join(map( str, result) )
+    result = 'Não possui trilha Euleriana alternante'
+    if trail: 
+        result  = ' '.join(map( str, trail ) )
 
-    print( stg )
-
+    print( result )
 
