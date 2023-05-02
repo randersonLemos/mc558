@@ -53,18 +53,20 @@ def CountPaths(Adjs, TopSorLst, s, t):
 
 
 if __name__ == '__main__':
-    import argparse; parser = argparse.ArgumentParser()
-    parser.add_argument('--file', type=argparse.FileType('r'), required=True)
-    args = parser.parse_args()
-    file = args.file
-    n, m, s, t =  map( int, file.readline().strip().split(' ') )
+    #import argparse; parser = argparse.ArgumentParser()
+    #parser.add_argument('--file', type=argparse.FileType('r'), required=True)
+    #args = parser.parse_args()
+    #file = args.file
+    #n, m, s, t =  map( int, file.readline().strip().split(' ') )
+    n, m, s, t =  map( int, input().strip().split(' ') )
 
     Adjs = {}
     for i in range(n):
         Adjs[i] = []
 
     for i in range(m):
-        x, y, c = map( int, file.readline().strip().split(' ') )
+        #x, y, c = map( int, file.readline().strip().split(' ') )
+        x, y, c = map( int, input().strip().split(' ') )
         Adjs[x].append( (y, c) )
     
     ini, end, cor, pai = DFS(Adjs, s, t)
