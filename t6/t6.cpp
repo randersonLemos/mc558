@@ -69,8 +69,14 @@ int main() {
 
     loadCoins( n, Q, C, vi, vv, vp, vq );
 
+    cout << "C: "<< C << " Q: " << Q << endl;
     showCoins( C, vi, vv, vp, vq );
     cout << endl;
+
+    Grafo g( C*(Q+1) );
+    cout << "Grafo gerado:" << endl;
+    cout << g;
+    cout << "---" << endl;
 
     for( int c = 0; c < C ; c++)
     {
@@ -79,26 +85,39 @@ int main() {
         int cc0 = c+1; int qq0 = q; int pp0 = 0;
         int cc1 = c+1; int qq1 = q + vv[c+1]; int pp1 = vp[c+1];
 
-        cout << "(" << c << "," << q <<  ")" << "->" << pp0 << "->" << "(" << cc0 << "," << qq0 << ")" << endl; 
-        cout << "(" << computeVerticeIndexFromCQ(c, q, Q) <<  ")" << "->" << pp0 << "->" << "(" << computeVerticeIndexFromCQ(cc0, qq0, Q)  << ")" << endl; 
-        cout << "(" << computeVerticeIndexFromCQ(c, q, Q) << "," << computeVerticeIndexFromCQ(cc0, qq0, Q)  << "," << pp0 <<")" << endl; 
+        int i   = computeVerticeIndexFromCQ(c, q, Q);
+        int ii0 = computeVerticeIndexFromCQ(cc0, qq0, Q);
+        int ii1 = computeVerticeIndexFromCQ(cc1, qq1, Q);
 
+        if( (cc0 < C ) && (qq0 < Q+1))
+        {
+          cout << "(" << c << "," << q <<  ")" << "->" << pp0 << "->" << "(" << cc0 << "," << qq0 << ") => "; 
+          cout << "(" << i <<  ")" << "->" << pp0 << "->" << "(" << ii0  << ")" << endl; 
+          cout << "(" << i << "," << ii0  << "," << pp0 <<")" << endl; 
+
+          g.adicionaArco(i, ii0, pp0);
+
+        }
         cout << "---" << endl;
+        if( (cc1 < C ) && (qq1 < Q+1))
+        {
+          cout << "(" << c << "," << q <<  ")" << "->" << pp1 << "->" << "(" << cc1 << "," << qq1 << ") => " ; 
+          cout << "(" << i <<  ")" << "->" << pp1 << "->" << "(" << ii1  << ")" << endl; 
+          cout << "(" << i << "," << ii1 << "," << pp1 <<")" << endl; 
 
-        cout << "(" << c << "," << q <<  ")" << "->" << pp1 << "->" << "(" << cc1 << "," << qq1 << ")" << endl; 
-        cout << "(" << computeVerticeIndexFromCQ(c, q, Q) <<  ")" << "->" << pp1 << "->" << "(" << computeVerticeIndexFromCQ(cc1, qq1, Q)  << ")" << endl; 
-        cout << "(" << computeVerticeIndexFromCQ(c, q, Q) << "," << computeVerticeIndexFromCQ(cc1, qq1, Q)  << "," << pp1 <<")" << endl; 
-        cout << endl;
+          g.adicionaArco(i, ii1, pp1);
+        }
+       cout << "===" << endl;
       }
       cout << endl;
-      break;
     }
     
-    Grafo g( 5 );
-
 
     cout << "Grafo gerado:" << endl;
     cout << g;
+    cout << "---" << endl;
+
+
 
 }
 
