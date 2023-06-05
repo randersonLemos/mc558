@@ -1,3 +1,5 @@
+#include <queue>
+#include <tuple>
 #include <vector>
 #include "shortest_path.hpp"
 
@@ -37,16 +39,10 @@ void showCoins( int N, vector<int>& vi, vector<int>& vv, vector<int>& vp, vector
     }
 }
 
-int computeVerticeIndexFromCQ( int c, int q, int Q)
+int computeVerticeIndex( int c, int q, int Q)
 {
   return c*(Q+1)+q;
 }
-
-void computeCQFromVerticeIndex( int idx, int Q)
-{
-  return;
-}
-
 
 int main() {
     int n, Q, C = 0;
@@ -55,6 +51,21 @@ int main() {
     loadCoins( n, Q, C, vi, vv, vp, vq );
 
     Grafo g( C*(Q+1) );
+    queue< tuple<int, int> > waitroom;
+    tuple<int, int> tup;
+
+    waitroom.push( make_tuple(0,0) );
+    waitroom.push( make_tuple(0,1) );
+
+    while( !waitroom.empty() )
+    {
+      tup = waitroom.front();
+      waitroom.pop();
+      cout << "Not Empty"  << endl;
+      cout << get<0>(tup) <<  ", " << get<1>(tup) << endl;
+    }
+    
+    cout << "Empty" << endl;
 
     //cout << "C: "<< C << " Q: " << Q << endl;
     //showCoins( C, vi, vv, vp, vq );
@@ -68,9 +79,9 @@ int main() {
       {
         int cc0 = c+1; int qq0 = q;           int pp0 = 0;
         int cc1 = c+1; int qq1 = q + vv[c+1]; int pp1 = vp[c+1];
-        int i   = computeVerticeIndexFromCQ(c,   q,   Q);
-        int ii0 = computeVerticeIndexFromCQ(cc0, qq0, Q);
-        int ii1 = computeVerticeIndexFromCQ(cc1, qq1, Q);
+        int i   = computeVerticeIndex(c,   q,   Q);
+        int ii0 = computeVerticeIndex(cc0, qq0, Q);
+        int ii1 = computeVerticeIndex(cc1, qq1, Q);
 
         if( c == 0 && q == 0 )
         {
@@ -110,7 +121,7 @@ int main() {
     int source = 0; bool first = true;
     for( int q = Q; q >=0; q--)
     {
-      int target = computeVerticeIndexFromCQ(C-1, q, Q);
+      int target = computeVerticeIndex(C-1, q, Q);
       int *dist = g.caminhoMinimo(source, target);
 
       if( (first) && (dist[target] != 2147483647 ))
