@@ -1,14 +1,16 @@
 #include <queue>
 #include <tuple>
 #include <vector>
+#include <numeric>
 #include "shortest_path.hpp"
 
 
 using namespace std;
 
 
-void loadCoins( int& n, int& Q, int& N, vector<int>& vi, vector<int>& vv, vector<int>& vp, vector<int>& vq ) 
+int loadCoins( int& n, int& Q,  vector<int>& vi, vector<int>& vv, vector<int>& vp, vector<int>& vq ) 
 {
+    int N = 0;
     // Source
     vi.push_back( N ); vv.push_back( 0 ); vp.push_back( 0 ); vq.push_back( 1 );
     N += 1;
@@ -28,6 +30,8 @@ void loadCoins( int& n, int& Q, int& N, vector<int>& vi, vector<int>& vv, vector
     // Target
     vi.push_back( N ); vv.push_back( 0 ); vp.push_back( 0 ); vq.push_back( 1 );
     N += 1;
+
+    return N;
 }
 
 
@@ -39,33 +43,79 @@ void showCoins( int N, vector<int>& vi, vector<int>& vv, vector<int>& vp, vector
     }
 }
 
+
+void getTuplecq(int &c, int &q, tuple< int, int > _tuple)
+{
+  c = get<0>(_tuple); q = get<1>(_tuple);
+}
+
+
 int computeVerticeIndex( int c, int q, int Q)
 {
   return c*(Q+1)+q;
 }
 
+
 int main() {
-    int n, Q, C = 0;
+    int n, Q;
     vector<int> vi, vv, vp, vq;
 
-    loadCoins( n, Q, C, vi, vv, vp, vq );
+    int C = loadCoins( n, Q, vi, vv, vp, vq );
+    int V = accumulate(vv.begin(), vv.end(), 0 );
+    int P = accumulate(vp.begin(), vp.end(), 0);
 
-    Grafo g( C*(Q+1) );
-    queue< tuple<int, int> > waitroom;
-    tuple<int, int> tup;
-
-    waitroom.push( make_tuple(0,0) );
-    waitroom.push( make_tuple(0,1) );
-
-    while( !waitroom.empty() )
+    if( V < Q )
     {
-      tup = waitroom.front();
-      waitroom.pop();
-      cout << "Not Empty"  << endl;
-      cout << get<0>(tup) <<  ", " << get<1>(tup) << endl;
+      cout << V << " " << P << endl;
+      return 0;
     }
+
+    //cout << "C:" << C << " Q: " << Q << " V: " << V << endl;
+    //showCoins( C, vi, vv, vp, vq );
+    //cout << "---" << endl;
     
-    cout << "Empty" << endl;
+    Grafo g( C*(Q+1) );
+
+    //int c, q = -1;
+    //tuple<int, int> _tuple;
+    //queue< tuple<int, int> > waitroom;
+    //waitroom.push( make_tuple(0,0) );
+
+    //while( !waitroom.empty() )
+    //{
+    //  _tuple = waitroom.front();
+    //  getTuplecq( c, q, _tuple);
+
+    //  if( c == (C -1) )
+    //    break;
+
+    //  int cc0 = c+1; int qq0 = q;           int pp0 = 0;
+    //  int cc1 = c+1; int qq1 = q + vv[c+1]; int pp1 = vp[c+1];
+    //  int i   = computeVerticeIndex(c,   q,   Q);
+    //  int ii0 = computeVerticeIndex(cc0, qq0, Q);
+    //  int ii1 = computeVerticeIndex(cc1, qq1, Q);
+
+    //  cout << c   <<  ", " << q;
+
+    //  if ( (cc0 < C) && ( qq0 < (Q + 1) ) )
+    //  {
+    //    cout << " => " << cc0 <<  ", " << qq0;
+    //    waitroom.push( make_tuple( cc0, qq0 ) );
+    //    g.adicionaArco(i, ii0, pp0);
+    //  }
+    //  if ( (cc1 < C) && (qq1 < (Q + 1) ) )
+    //  {
+    //    cout << " and " << cc1 <<  ", " << qq1;
+    //    waitroom.push( make_tuple( cc1, qq1 ) );
+    //    g.adicionaArco(i, ii1, pp1);
+    //  }
+    //  cout << endl;
+    //  waitroom.pop();
+    //}
+    
+    //cout << "---" << endl;
+    //cout << g;
+    //cout << "---" << endl;
 
     //cout << "C: "<< C << " Q: " << Q << endl;
     //showCoins( C, vi, vv, vp, vq );
@@ -117,6 +167,7 @@ int main() {
     //cout << "Grafo gerado:" << endl;
     //cout << g;
     //cout << "---" << endl;
+    
     
     int source = 0; bool first = true;
     for( int q = Q; q >=0; q--)
