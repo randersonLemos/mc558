@@ -73,7 +73,7 @@ int main() {
     //cout << "C:" << C << " Q: " << Q << " V: " << V << endl;
     //showCoins( C, vi, vv, vp, vq );
     //cout << "---" << endl;
-    
+    //
     Grafo g( C*(Q+1) );
 
     //int c, q = -1;
@@ -189,4 +189,3 @@ int main() {
       first = false;
     }
 }
-
